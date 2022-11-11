@@ -50,19 +50,33 @@ public class LC94_InorderTraversal {
 
 
     public List<Integer> inorderTraversal(TreeNode root) {
-        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> iList = new ArrayList<>();
+        inorderTraversal(root, iList);
+        return iList;
+    }
 
-        TreeNode node = root;
-        while (null != node || !stack.isEmpty()){
-            while (null != node){
-               stack.push(node);
-               node = node.left;
+    public void inorderTraversal(TreeNode root, List<Integer> iList) {
+        if(root == null) return;
+        inorderTraversal(root.left, iList);
+        iList.add(root.val);
+        inorderTraversal(root.right, iList);
+    }
+
+
+    public List<Integer> inorderTraversal2(TreeNode root) {
+        List<Integer> iList = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || root != null){
+            while (root != null){
+                stack.push(root);
+                root= root.left;
             }
-            node = stack.pop();
-            result.add(node.val);
-            node = node.right;
+            root = stack.pop();
+            iList.add(root.val);
+            root = root.right;
         }
-        return  result;
+
+        return iList;
     }
 
 
