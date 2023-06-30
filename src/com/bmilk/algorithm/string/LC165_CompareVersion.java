@@ -1,6 +1,5 @@
 package com.bmilk.algorithm.string;
 
-import com.sun.deploy.util.StringUtils;
 
 public class LC165_CompareVersion {
     public static void main(String[] args) {
