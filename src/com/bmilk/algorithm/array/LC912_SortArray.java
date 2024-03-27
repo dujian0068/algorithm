@@ -1,11 +1,12 @@
 package com.bmilk.algorithm.array;
 
-import javafx.embed.swt.SWTFXUtils;
+
+import java.util.Random;
 
 public class LC912_SortArray {
 
     public static void main(String[] args) {
-        int[] nums = {31,19,7,22,30, 88,6,9,4};
+        int[] nums = {5, 1, 1, 2, 0, 0};
         LC912_SortArray o = new LC912_SortArray();
         o.sortArray(nums);
         for (int num : nums) {
@@ -14,35 +15,38 @@ public class LC912_SortArray {
     }
 
     public int[] sortArray(int[] nums) {
-        quickSort(nums, 0, nums.length-1);
+        quickSort(nums, 0, nums.length - 1);
         return nums;
     }
 
-    private void quickSort(int[] nums, int left, int right){
-        if(left >= right){
+    private void quickSort(int[] nums, int left, int right) {
+        if (left >= right) {
             return;
         }
-        int p = left;
-        left ++;
-        while (left < right){
-            while (left<right && nums[right]>=nums[p]) {
-                right--;
-            }
-            while (left< right && nums[left]< nums[p]){
-                left++;
-            }
-            swap(nums, left, right);
+        int p = randomizedPartition(left, right);
+        swap(nums,left, p);
+        int i = left;
+        int j = right;
+        int tmp = nums[left];
+        while (i < j) {
+            while (i<j && nums[j] >= tmp) j--;
+            while (i<j && nums[i] < tmp) i++;
+            swap(nums, i,j);
         }
-        if(nums[p] > nums[left]){
-            swap(nums, p , left);
-        }
-        quickSort(nums, p, left-1);
-        quickSort(nums, right+1, nums.length-1);
+        if(nums[i] < tmp) swap(nums, left, i);
+        quickSort(nums, left, i);
+        quickSort(nums, i + 1, right);
     }
 
-    private void swap(int[] nums, int left, int right){
+    private void swap(int[] nums, int left, int right) {
         int tmp = nums[left];
         nums[left] = nums[right];
         nums[right] = tmp;
     }
+
+    public int randomizedPartition(int left, int right) {
+        return new Random().nextInt(right - left + 1) + left;
+
+    }
+
 }
