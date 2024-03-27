@@ -56,7 +56,7 @@ public class LC206_ReverseList {
     }
 
 
-    static class ListNode{
+    private static class ListNode{
         private int val;
         private ListNode next;
         ListNode() {}
