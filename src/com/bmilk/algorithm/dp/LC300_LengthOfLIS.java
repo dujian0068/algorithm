@@ -18,10 +18,10 @@ public class LC300_LengthOfLIS {
             for (int j =0 ; j<i; j++){
                 if(nums[i] > nums[j]){
                     dp[i] = Math.max(dp[i] , dp[j]+1);
-                    result = Math.max(dp[i], result);
                 }
-
             }
+            result = Math.max(dp[i], result);
+
         }
         return result;
 
