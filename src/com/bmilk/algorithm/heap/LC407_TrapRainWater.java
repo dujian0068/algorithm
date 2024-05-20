@@ -1,7 +1,6 @@
-package com.bmilk.algorithm.queue;
+package com.bmilk.algorithm.heap;
 
 import java.util.PriorityQueue;
-import java.util.concurrent.DelayQueue;
 
 public class LC407_TrapRainWater {
 
