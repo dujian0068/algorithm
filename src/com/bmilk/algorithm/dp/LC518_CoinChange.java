@@ -1,9 +1,9 @@
 package com.bmilk.algorithm.dp;
 
-public class LC322_CoinChange {
+public class LC518_CoinChange {
 
     public static void main(String[] args) {
-        LC322_CoinChange o = new LC322_CoinChange();
+        LC518_CoinChange o = new LC518_CoinChange();
         int i = o.coinChange(new int[]{1, 2, 5}, 5);
         System.out.println(i);
     }
