@@ -21,6 +21,5 @@ public class LC287_FindDuplicate {
             quick = nums[quick];
         }
         return slow;
-
     }
 }
