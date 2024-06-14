@@ -1,9 +1,6 @@
 package com.bmilk.algorithm.greedy;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class LC2813_FindMaximumElegance {
 
@@ -14,7 +11,7 @@ public class LC2813_FindMaximumElegance {
 //            items[i-1] = new int[]{1000000000, i};
 //        }
         int[][] items = {{1, 1}, {4, 1}};
-        long maximumElegance = o.findMaximumElegance(items, 1);
+        long maximumElegance = o.findMaximumElegance2(items, 1);
         System.out.println(maximumElegance);
     }
 
@@ -89,6 +86,36 @@ public class LC2813_FindMaximumElegance {
             if (!pollQueue.isEmpty()) {
                 queue.add(pollQueue);
             }
+        }
+        return result;
+    }
+
+    public long findMaximumElegance2(int[][] items, int k) {
+        Arrays.sort(items, ((o1, o2) -> o2[0] - o1[0]));
+
+        Set<Integer> categorySet = new HashSet<>();
+        long profitSum = 0;
+        Stack<int[]> stack = new Stack<>();
+        for (int i = 0; i<k ; i++){
+            int[] item = items[i];
+            profitSum += item[0];
+            if(categorySet.contains(item[1])){
+                stack.push(item);
+            }else {
+                categorySet.add(item[1]);
+            }
+        }
+        int p = k;
+        long result = profitSum + (long)categorySet.size() * (long)categorySet.size();
+        while (!stack.isEmpty() && p < items.length){
+            int[] item = items[p++];
+            if (categorySet.contains(item[1])){
+                continue;
+            }
+            int[] pop = stack.pop();
+            categorySet.add(item[1]);
+            profitSum = profitSum - pop[0] + item[0];
+            result = Math.max(result, profitSum + (long) categorySet.size()*(long) categorySet.size());
         }
         return result;
     }
