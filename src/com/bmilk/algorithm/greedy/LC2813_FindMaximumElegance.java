@@ -1,17 +1,17 @@
 package com.bmilk.algorithm.greedy;
 
-import javax.print.attribute.standard.PrintQuality;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class LC2813_FindMaximumElegance {
 
     public static void main(String[] args) {
         LC2813_FindMaximumElegance o = new LC2813_FindMaximumElegance();
-        int[][] items = {{5, 4}, {6, 6}, {8, 4}, {6, 6}, {7, 6}, {1, 6}, {4, 2}};
-        long maximumElegance = o.findMaximumElegance(items, 5);
+//        int[][] items = new int[100000][2];
+//        for (int i = 1; i<= 100000; i++){
+//            items[i-1] = new int[]{1000000000, i};
+//        }
+        int[][] items = {{1, 1}, {4, 1}};
+        long maximumElegance = o.findMaximumElegance2(items, 1);
         System.out.println(maximumElegance);
     }
 
@@ -31,68 +31,93 @@ public class LC2813_FindMaximumElegance {
             int[] peek2 = o2.peek();
             return peek2[0] - peek1[0];
         });
-
-        int sumProfit = 0;
-        Map<Integer, Integer> categoryNumMap = new HashMap<>();
-        while (priorityQueue.size() < k) {
-            for (PriorityQueue<int[]> tmp : categoryMap.values()) {
-                if (!tmp.isEmpty()) {
-                    queue.add(tmp);
-                }
-            }
-
-            while (priorityQueue.size() < k && !queue.isEmpty()) {
-                int[] poll = queue.poll().poll();
-                priorityQueue.add(poll);
-                sumProfit += poll[0];
-                categoryNumMap.merge(poll[1], 1, (a, b) -> categoryNumMap.get(poll[b]) + b);
-            }
-        }
-        while (!queue.isEmpty()) {
-            int[] tmp = queue.poll().poll();
-            categoryMap.remove(tmp[1]);
-        }
         for (PriorityQueue<int[]> tmp : categoryMap.values()) {
             if (!tmp.isEmpty()) {
                 queue.add(tmp);
             }
         }
-        long result = sumProfit + categoryNumMap.size() * categoryNumMap.size();
+        long sumProfit = 0;
+        Map<Integer, Integer> categoryNumMap = new HashMap<>();
+        while (!queue.isEmpty() && priorityQueue.size() < k) {
+            int[] tmp = queue.poll().poll();
+            priorityQueue.add(tmp);
+            sumProfit += tmp[0];
+            categoryNumMap.put(tmp[1], 1);
+        }
+        while (!queue.isEmpty()) {
+            int[] tmp = queue.poll().poll();
+            categoryMap.remove(tmp[1]);
+        }
+
+        for (PriorityQueue<int[]> tmp : categoryMap.values()) {
+            if (!tmp.isEmpty()) {
+                queue.add(tmp);
+            }
+        }
+
+        while (priorityQueue.size() < k && !queue.isEmpty()) {
+            PriorityQueue<int[]> pollQueue = queue.poll();
+            int[] tmp = pollQueue.poll();
+            priorityQueue.add(tmp);
+            sumProfit += tmp[0];
+            categoryNumMap.put(tmp[1], categoryNumMap.get(tmp[1]) + 1);
+            if (!pollQueue.isEmpty()) {
+                queue.add(pollQueue);
+            }
+        }
+        long result = sumProfit + ((long) categoryNumMap.size() * (long) categoryNumMap.size());
+
         while (!queue.isEmpty()) {
             PriorityQueue<int[]> pollQueue = queue.poll();
-            int[] poll = pollQueue.poll();
-
-            int[] peek = priorityQueue.peek();
-
-            int afterSize = 0;
-            if (poll[1] == peek[1]) {
-                afterSize = categoryNumMap.size();
+            int[] tmp = pollQueue.poll();
+            int[] poll = priorityQueue.poll();
+            priorityQueue.add(tmp);
+            sumProfit = sumProfit - poll[0] + tmp[0];
+            int count = categoryNumMap.get(poll[1]);
+            if (count > 1) {
+                categoryNumMap.put(poll[1], count - 1);
             } else {
-                int tmp = categoryNumMap.get(peek[1]) > 1 ? categoryNumMap.size() : categoryNumMap.size() - 1;
-                afterSize = categoryNumMap.containsKey(poll[1]) ? tmp : tmp + 1;
+                categoryNumMap.remove(poll[1]);
             }
+            categoryNumMap.put(tmp[1], categoryNumMap.get(tmp[1]) == null ? 1 : categoryNumMap.get(tmp[1]) + 1);
 
-            long afterResult = sumProfit - peek[0] + poll[0] + afterSize * afterSize;
-            if (afterResult >= result) {
-                priorityQueue.poll();
-                priorityQueue.add(poll);
-                if (!pollQueue.isEmpty()) {
-                    queue.add(pollQueue);
-                }
-                if (afterSize != categoryNumMap.size()) {
-                    PriorityQueue<int[]> newQueue = new PriorityQueue<>();
-                    newQueue.add(peek);
-                    queue.add(newQueue);
-                }
+            result = Math.max(result, sumProfit + (long) categoryNumMap.size() * (long) categoryNumMap.size());
 
-                Integer remove = categoryNumMap.remove(peek[1]);
-                if (remove > 1) {
-                    categoryNumMap.put(peek[1], remove - 1);
-                }
-                categoryNumMap.put(poll[1], categoryNumMap.get(poll[1]) + 1);
-                result = afterResult;
+            if (!pollQueue.isEmpty()) {
+                queue.add(pollQueue);
             }
         }
         return result;
     }
+
+    public long findMaximumElegance2(int[][] items, int k) {
+        Arrays.sort(items, ((o1, o2) -> o2[0] - o1[0]));
+
+        Set<Integer> categorySet = new HashSet<>();
+        long profitSum = 0;
+        Stack<int[]> stack = new Stack<>();
+        for (int i = 0; i<k ; i++){
+            int[] item = items[i];
+            profitSum += item[0];
+            if(categorySet.contains(item[1])){
+                stack.push(item);
+            }else {
+                categorySet.add(item[1]);
+            }
+        }
+        int p = k;
+        long result = profitSum + (long)categorySet.size() * (long)categorySet.size();
+        while (!stack.isEmpty() && p < items.length){
+            int[] item = items[p++];
+            if (categorySet.contains(item[1])){
+                continue;
+            }
+            int[] pop = stack.pop();
+            categorySet.add(item[1]);
+            profitSum = profitSum - pop[0] + item[0];
+            result = Math.max(result, profitSum + (long) categorySet.size()*(long) categorySet.size());
+        }
+        return result;
+    }
+
 }
