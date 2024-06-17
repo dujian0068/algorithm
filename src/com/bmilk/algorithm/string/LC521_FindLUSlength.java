@@ -1,4 +1,4 @@
-package com.bmilk.algorithm.dp;
+package com.bmilk.algorithm.string;
 
 public class LC521_FindLUSlength {
     public int findLUSlength(String a, String b) {
