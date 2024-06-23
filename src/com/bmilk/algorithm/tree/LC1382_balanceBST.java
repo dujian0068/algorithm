@@ -38,23 +38,4 @@ public class LC1382_balanceBST {
         }
         return result;
     }
-
-    static class TreeNode {
-        int val;
-       TreeNode left;
-        TreeNode right;
-
-        TreeNode() {
-        }
-
-        TreeNode(int val) {
-            this.val = val;
-        }
-
-        TreeNode(int val, TreeNode left, TreeNode right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-    }
 }
