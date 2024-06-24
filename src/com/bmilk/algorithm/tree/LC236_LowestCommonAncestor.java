@@ -17,14 +17,4 @@ public class LC236_LowestCommonAncestor {
         return left || right || root.val == p.val || root.val == q.val;
     }
 
-    static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-
-        TreeNode(int x) {
-            val = x;
-        }
-
-    }
 }
